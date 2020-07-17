@@ -1,13 +1,33 @@
 package com.accenture.magicapp.viewmodel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.accenture.magicapp.R
+import com.accenture.magicapp.model.mock.MockCards
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(application: Application) : AndroidViewModel(application) {
+    private val mutableCardList = MutableLiveData<List<MockCards>>()
+    private val cardList: LiveData<List<MockCards>> = mutableCardList
+    var newCardList: MutableList<MockCards> = mutableListOf()
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+    fun getCardList(): LiveData<List<MockCards>> {
+        return cardList
     }
-    val text: LiveData<String> = _text
+
+    fun addNewCards() {
+
+
+        newCardList.add(MockCards(R.drawable.cardum, "Card name", "Card Type"))
+        newCardList.add(MockCards(R.drawable.carddois, "Card name", "Card Type"))
+        newCardList.add(MockCards(R.drawable.cardtres, "Card name", "Card Type"))
+
+
+    }
+
+    fun postValue() {
+        mutableCardList.postValue(newCardList)
+    }
+
 }

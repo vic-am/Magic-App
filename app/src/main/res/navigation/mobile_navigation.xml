@@ -9,12 +9,12 @@
         android:id="@+id/navigation_cards"
         android:name="com.accenture.magicapp.view.fragment.HomeFragment"
         android:label="@string/title_cards"
-        tools:layout="@layout/fragment_cards" />
+        tools:layout="@layout/fragment_main_recycler" />
 
     <fragment
         android:id="@+id/navigation_favorites"
-        android:name="com.accenture.magicapp.view.fragment.DashboardFragment"
+        android:name="com.accenture.magicapp.view.fragment.FavoritesFragment"
         android:label="@string/title_favorites"
-        tools:layout="@layout/fragment_favorites" />
+        tools:layout="@layout/fragment_main_recycler" />
 
 </navigation>
