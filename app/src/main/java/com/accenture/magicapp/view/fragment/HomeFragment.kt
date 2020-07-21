@@ -20,7 +20,6 @@ class HomeFragment : Fragment() {
     private lateinit var homeViewModel: HomeViewModel
     private var cardList: List<MockCards> = listOf()
     private val mAdapter: CardAdapter = CardAdapter(cardList)
-    private var spanSizeLookup: GridLayoutManager.SpanSizeLookup? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

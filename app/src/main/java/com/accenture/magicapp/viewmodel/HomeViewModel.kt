@@ -9,6 +9,7 @@ import com.accenture.magicapp.model.mock.Common
 import com.accenture.magicapp.model.mock.MockCards
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
+
     private val mutableCardList = MutableLiveData<List<MockCards>>()
     private val cardList: LiveData<List<MockCards>> = mutableCardList
     var newCardList: MutableList<MockCards> = mutableListOf()
