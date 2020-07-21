@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.accenture.magicapp.R
+import com.accenture.magicapp.model.mock.Common
 import com.accenture.magicapp.model.mock.MockCards
 import com.accenture.magicapp.view.adapter.CardAdapter
 import com.accenture.magicapp.viewmodel.HomeViewModel
@@ -17,8 +18,9 @@ import com.accenture.magicapp.viewmodel.HomeViewModel
 class HomeFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
-    private val mAdapter: CardAdapter = CardAdapter()
     private var cardList: List<MockCards> = listOf()
+    private val mAdapter: CardAdapter = CardAdapter(cardList)
+    private var spanSizeLookup: GridLayoutManager.SpanSizeLookup? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +47,34 @@ class HomeFragment : Fragment() {
 
     fun initRecyclerView(root: View) {
         val recyclerView = root.findViewById<RecyclerView>(R.id.recyclerViewHome)
-        recyclerView.layoutManager = GridLayoutManager(context, 3)
+        val layoutManager = GridLayoutManager(context, 3)
+        recyclerView.layoutManager = layoutManager
         recyclerView.adapter = mAdapter
+
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return getSpanSizeFromPosition(position)
+            }
+
+        }
+
+    }
+
+    fun getSpanSizeFromPosition(position: Int): Int {
+        var viewType = mAdapter.getItemViewType(position)
+        var spanValue = 0
+
+        when (viewType) {
+            Common.VIEWTYPE.HEADER_MAIN -> {
+                spanValue = 3
+            }
+
+            Common.VIEWTYPE.HEADER_TYPE -> {
+                spanValue = 3
+            }
+            else -> spanValue = 1
+        }
+
+        return spanValue
     }
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.accenture.magicapp.R
+import com.accenture.magicapp.model.mock.Common
 import com.accenture.magicapp.model.mock.MockCards
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
@@ -19,7 +20,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun addNewCards() {
 
 
-        newCardList.add(MockCards(R.drawable.cardum, "Card name", "Card Type"))
+        newCardList.add(MockCards(R.drawable.cardum, "Card name", Common.TESTS.HEADER_TEST))
+        newCardList.add(MockCards(R.drawable.carddois, "Card name", Common.TESTS.TYPE_TEST))
+        newCardList.add(MockCards(R.drawable.cardtres, "Card name", "Card Type"))
+        newCardList.add(MockCards(R.drawable.carddois, "Card name", "Card Type"))
+        newCardList.add(MockCards(R.drawable.cardtres, "Card name", "Card Type"))
         newCardList.add(MockCards(R.drawable.carddois, "Card name", "Card Type"))
         newCardList.add(MockCards(R.drawable.cardtres, "Card name", "Card Type"))
 
