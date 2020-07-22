@@ -10,8 +10,9 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.accenture.magicapp.R
 import com.accenture.magicapp.model.mock.Common
 import com.accenture.magicapp.model.mock.MockCards
+import com.accenture.magicapp.view.`interface`.CardListener
 
-class CardAdapter(var mCardList: List<MockCards>) :
+class CardAdapter(var mCardList: List<MockCards>, val listener: CardListener) :
     Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -65,6 +66,12 @@ class CardAdapter(var mCardList: List<MockCards>) :
             val headerTypeViewHolder = holder
             headerTypeViewHolder.bind("Header type funcionando!")
         }
+
+        holder.itemView.setOnClickListener {
+            if (holder is CardViewHolder) {
+                listener.cardOnClick(mCardList[position])
+            }
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -80,7 +87,6 @@ class CardAdapter(var mCardList: List<MockCards>) :
     fun updateList(list: List<MockCards>) {
         mCardList = list
     }
-
 
 
     class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

@@ -1,5 +1,6 @@
 package com.accenture.magicapp.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,15 +13,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.accenture.magicapp.R
 import com.accenture.magicapp.model.mock.Common
 import com.accenture.magicapp.model.mock.MockCards
+import com.accenture.magicapp.view.`interface`.CardListener
+import com.accenture.magicapp.view.activity.ScreenSlidePagerActivity
 import com.accenture.magicapp.view.adapter.CardAdapter
 import com.accenture.magicapp.viewmodel.FavoritesViewModel
 
 
-class FavoritesFragment : Fragment() {
+class FavoritesFragment : Fragment(), CardListener {
 
     private lateinit var favoritesViewModel: FavoritesViewModel
     private var cardList: List<MockCards> = listOf()
-    private val mAdapter: CardAdapter = CardAdapter(cardList)
+    private val mAdapter: CardAdapter = CardAdapter(cardList, this)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,5 +75,9 @@ class FavoritesFragment : Fragment() {
         }
 
         return spanValue
+    }
+
+    override fun cardOnClick(card: MockCards) {
+        startActivity(Intent(context, ScreenSlidePagerActivity::class.java))
     }
 }

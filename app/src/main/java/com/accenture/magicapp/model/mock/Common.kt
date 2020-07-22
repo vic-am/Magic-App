@@ -31,4 +31,8 @@ class Common {
         val TYPE_TEST = "TYPETEST"
     }
 
+    object PAGES {
+        val NUM_PAGES = 5
+    }
+
 }
