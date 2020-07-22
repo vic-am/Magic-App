@@ -12,7 +12,7 @@ import com.accenture.magicapp.model.mock.Common
 import com.accenture.magicapp.model.mock.MockCards
 import com.accenture.magicapp.view.`interface`.CardListener
 
-class CardAdapter(var mCardList: List<MockCards>, val listener: CardListener) :
+class CardAdapter(internal var cardList: List<MockCards>, val cardListener: CardListener) :
     Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -52,13 +52,13 @@ class CardAdapter(var mCardList: List<MockCards>, val listener: CardListener) :
     }
 
     override fun getItemCount(): Int {
-        return mCardList.count()
+        return cardList.count()
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is CardViewHolder) {
             val cardViewHolder = holder
-            cardViewHolder.bind(mCardList[position])
+            cardViewHolder.bind(cardList[position])
         } else if (holder is HeaderMainViewHolder) {
             val headerMainViewHolder = holder
             headerMainViewHolder.bind("Header title funcionando!")
@@ -69,15 +69,15 @@ class CardAdapter(var mCardList: List<MockCards>, val listener: CardListener) :
 
         holder.itemView.setOnClickListener {
             if (holder is CardViewHolder) {
-                listener.cardOnClick(mCardList[position])
+                cardListener.cardOnClick(cardList[position])
             }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (mCardList[position].type == Common.TESTS.HEADER_TEST) {
+        return if (cardList[position].type == Common.TESTS.HEADER_TEST) {
             Common.VIEWTYPE.HEADER_MAIN
-        } else if (mCardList[position].type == Common.TESTS.TYPE_TEST) {
+        } else if (cardList[position].type == Common.TESTS.TYPE_TEST) {
             Common.VIEWTYPE.HEADER_TYPE
         } else {
             Common.VIEWTYPE.BODY_CARDS
@@ -85,7 +85,7 @@ class CardAdapter(var mCardList: List<MockCards>, val listener: CardListener) :
     }
 
     fun updateList(list: List<MockCards>) {
-        mCardList = list
+        cardList = list
     }
 
 

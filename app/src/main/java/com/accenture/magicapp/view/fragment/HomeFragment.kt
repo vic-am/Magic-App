@@ -2,9 +2,7 @@ package com.accenture.magicapp.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -18,21 +16,16 @@ import com.accenture.magicapp.view.activity.ScreenSlidePagerActivity
 import com.accenture.magicapp.view.adapter.CardAdapter
 import com.accenture.magicapp.viewmodel.HomeViewModel
 
-class HomeFragment : Fragment(), CardListener {
+class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
 
     private lateinit var homeViewModel: HomeViewModel
     private var cardList: List<MockCards> = listOf()
     private val mAdapter: CardAdapter = CardAdapter(cardList, this)
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         homeViewModel =
             ViewModelProviders.of(this).get(HomeViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_main_recycler, container, false)
-        initRecyclerView(root)
-
+        initRecyclerView(view)
 
         homeViewModel.addNewCards()
         homeViewModel.addNewCards()
@@ -43,9 +36,6 @@ class HomeFragment : Fragment(), CardListener {
         homeViewModel.getCardList().observe(viewLifecycleOwner, Observer {
             mAdapter.updateList(it)
         })
-
-
-        return root
     }
 
     fun initRecyclerView(root: View) {
@@ -65,18 +55,12 @@ class HomeFragment : Fragment(), CardListener {
 
     fun getSpanSizeFromPosition(position: Int): Int {
         var viewType = mAdapter.getItemViewType(position)
-        var spanValue = 0
-
-        when (viewType) {
-            Common.VIEWTYPE.HEADER_MAIN -> {
-                spanValue = 3
+        var spanValue =
+            when (viewType) {
+                Common.VIEWTYPE.HEADER_MAIN,
+                Common.VIEWTYPE.HEADER_TYPE -> 3
+                else -> 1
             }
-
-            Common.VIEWTYPE.HEADER_TYPE -> {
-                spanValue = 3
-            }
-            else -> spanValue = 1
-        }
 
         return spanValue
     }

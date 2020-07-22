@@ -2,9 +2,7 @@ package com.accenture.magicapp.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -19,29 +17,22 @@ import com.accenture.magicapp.view.adapter.CardAdapter
 import com.accenture.magicapp.viewmodel.FavoritesViewModel
 
 
-class FavoritesFragment : Fragment(), CardListener {
+class FavoritesFragment : Fragment(R.layout.fragment_favorites_recycler), CardListener {
 
     private lateinit var favoritesViewModel: FavoritesViewModel
     private var cardList: List<MockCards> = listOf()
     private val mAdapter: CardAdapter = CardAdapter(cardList, this)
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initRecyclerView(view)
         favoritesViewModel =
             ViewModelProviders.of(this).get(FavoritesViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_favorites_recycler, container, false)
-        initRecyclerView(root)
 
         favoritesViewModel.addNewCards()
         favoritesViewModel.postValue()
         favoritesViewModel.getCardList().observe(viewLifecycleOwner, Observer {
             mAdapter.updateList(it)
         })
-
-        return root
     }
 
     fun initRecyclerView(root: View) {
