@@ -19,7 +19,6 @@ class RetrofitService {
     private fun getRetrofit(): Retrofit? {
         if (retrofit == null) {
 
-            // Configuração de parametros de conexão
             val httpClient = OkHttpClient.Builder()
             httpClient.readTimeout(30, TimeUnit.SECONDS)
             httpClient.connectTimeout(30, TimeUnit.SECONDS)
