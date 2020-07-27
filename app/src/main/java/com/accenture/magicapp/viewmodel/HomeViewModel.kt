@@ -4,36 +4,23 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.accenture.magicapp.R
-import com.accenture.magicapp.model.mock.Common
-import com.accenture.magicapp.model.mock.MockCards
+import com.accenture.magicapp.model.data.pojo.card.Card
+import com.accenture.magicapp.model.data.remote.MagicApiRepository
+import io.reactivex.disposables.CompositeDisposable
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val mutableCardList = MutableLiveData<List<MockCards>>()
-    private val cardList: LiveData<List<MockCards>> = mutableCardList
-    var newCardList: MutableList<MockCards> = mutableListOf()
+    private val mutableCardList = MutableLiveData<List<Card>>()
+    private val cardList: LiveData<List<Card>> = mutableCardList
+    private var disposable = CompositeDisposable()
+    val cardRepository = MagicApiRepository()
 
-    fun getCardList(): LiveData<List<MockCards>> {
+    fun getCardList(): LiveData<List<Card>> {
         return cardList
     }
 
-    fun addNewCards() {
+    fun getAllCards() {
 
-
-        newCardList.add(MockCards(R.drawable.cardum, "Card name", Common.TESTS.HEADER_TEST))
-        newCardList.add(MockCards(R.drawable.carddois, "Card name", Common.TESTS.TYPE_TEST))
-        newCardList.add(MockCards(R.drawable.cardtres, "Card name", "Card Type"))
-        newCardList.add(MockCards(R.drawable.carddois, "Card name", "Card Type"))
-        newCardList.add(MockCards(R.drawable.cardtres, "Card name", "Card Type"))
-        newCardList.add(MockCards(R.drawable.carddois, "Card name", "Card Type"))
-        newCardList.add(MockCards(R.drawable.cardtres, "Card name", "Card Type"))
-
-
-    }
-
-    fun postValue() {
-        mutableCardList.postValue(newCardList)
     }
 
 }

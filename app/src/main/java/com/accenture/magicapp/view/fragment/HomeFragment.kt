@@ -9,33 +9,33 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.accenture.magicapp.R
+import com.accenture.magicapp.model.data.pojo.card.Card
 import com.accenture.magicapp.model.mock.Common
-import com.accenture.magicapp.model.mock.MockCards
 import com.accenture.magicapp.view.`interface`.CardListener
 import com.accenture.magicapp.view.activity.ScreenSlidePagerActivity
 import com.accenture.magicapp.view.adapter.CardAdapter
 import com.accenture.magicapp.viewmodel.HomeViewModel
+import com.accenture.magicapp.viewmodel.HomeViewModelJava
 
 class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
 
     private lateinit var homeViewModel: HomeViewModel
-    private var cardList: List<MockCards> = listOf()
+    private lateinit var homeViewModelJava: HomeViewModelJava
+    private var cardList: List<Card> = listOf()
     private val mAdapter: CardAdapter = CardAdapter(cardList, this)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         homeViewModel =
             ViewModelProviders.of(this).get(HomeViewModel::class.java)
         initRecyclerView(view)
+        homeViewModelJava = ViewModelProviders.of(this).get(HomeViewModelJava::class.java)
 
-        homeViewModel.addNewCards()
-        homeViewModel.addNewCards()
-        homeViewModel.addNewCards()
-        homeViewModel.addNewCards()
-        homeViewModel.addNewCards()
-        homeViewModel.postValue()
-        homeViewModel.getCardList().observe(viewLifecycleOwner, Observer {
-            mAdapter.updateList(it)
-        })
+        homeViewModelJava.getAllCards()
+        homeViewModelJava.cardsList.observe(
+            viewLifecycleOwner,
+            Observer { mAdapter.updateList(it) })
+
+
     }
 
     fun initRecyclerView(root: View) {
@@ -65,7 +65,7 @@ class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
         return spanValue
     }
 
-    override fun cardOnClick(card: MockCards) {
+    override fun cardOnClick(card: Card) {
         startActivity(Intent(context, ScreenSlidePagerActivity::class.java))
     }
 }
