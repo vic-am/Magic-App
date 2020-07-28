@@ -8,12 +8,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.accenture.magicapp.R
-import com.accenture.magicapp.model.data.pojo.card.Card
-import com.accenture.magicapp.model.mock.Common
+import com.accenture.magicapp.Util.Common
+import com.accenture.magicapp.model.data.pojo.jsonpojos.CardsItem
 import com.accenture.magicapp.view.`interface`.CardListener
 import com.squareup.picasso.Picasso
 
-class CardAdapter(internal var cardList: List<Card>, val cardListener: CardListener) :
+class CardAdapter(internal var cardList: List<CardsItem>, val cardListener: CardListener) :
     Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -85,16 +85,16 @@ class CardAdapter(internal var cardList: List<Card>, val cardListener: CardListe
         }
     }
 
-    fun updateList(list: List<Card>) {
+    fun updateList(list: List<CardsItem>) {
         cardList = list
     }
 
 
     class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(card: Card) {
+        fun bind(cards: CardsItem) {
             val cardImage = itemView.findViewById<ImageView>(R.id.imageViewCard)
-            Picasso.get().load(card.imageUrl + ".jpg").into(cardImage)
+            Picasso.get().load(cards.imageUrl).into(cardImage)
         }
 
     }

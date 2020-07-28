@@ -1,4 +1,4 @@
-package com.accenture.magicapp.model.mock
+package com.accenture.magicapp.Util
 
 class Common {
 

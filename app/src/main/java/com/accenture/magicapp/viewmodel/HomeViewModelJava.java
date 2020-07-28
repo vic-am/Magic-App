@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.accenture.magicapp.model.data.pojo.card.Card;
+import com.accenture.magicapp.model.data.pojo.jsonpojos.CardsItem;
 import com.accenture.magicapp.model.data.remote.MagicApiRepository;
 
 import java.util.List;
@@ -18,7 +18,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class HomeViewModelJava extends AndroidViewModel {
 
-    private MutableLiveData<List<Card>> cardsList = new MutableLiveData<>();
+    private MutableLiveData<List<CardsItem>> cardsList = new MutableLiveData<>();
     private MagicApiRepository repository = new MagicApiRepository();
     private CompositeDisposable disposable = new CompositeDisposable();
 
@@ -26,7 +26,7 @@ public class HomeViewModelJava extends AndroidViewModel {
         super(application);
     }
 
-    public LiveData<List<Card>> getCardsList() {
+    public LiveData<List<CardsItem>> getCardsList() {
         return this.cardsList;
     }
 
@@ -36,7 +36,7 @@ public class HomeViewModelJava extends AndroidViewModel {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(cards -> {
-                            cardsList.setValue(cards);
+                            cardsList.setValue(cards.getCards());
                         })
         );
     }

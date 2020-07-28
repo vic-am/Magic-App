@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.accenture.magicapp.R
-import com.accenture.magicapp.model.data.pojo.card.Card
-import com.accenture.magicapp.model.mock.Common
+import com.accenture.magicapp.Util.Common
+import com.accenture.magicapp.model.data.pojo.jsonpojos.CardsItem
 import com.accenture.magicapp.view.`interface`.CardListener
 import com.accenture.magicapp.view.activity.ScreenSlidePagerActivity
 import com.accenture.magicapp.view.adapter.CardAdapter
@@ -21,8 +21,8 @@ class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
 
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var homeViewModelJava: HomeViewModelJava
-    private var cardList: List<Card> = listOf()
-    private val mAdapter: CardAdapter = CardAdapter(cardList, this)
+    private var cardList: List<CardsItem> = listOf()
+    private val adapter: CardAdapter = CardAdapter(cardList, this)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         homeViewModel =
@@ -33,7 +33,7 @@ class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
         homeViewModelJava.getAllCards()
         homeViewModelJava.cardsList.observe(
             viewLifecycleOwner,
-            Observer { mAdapter.updateList(it) })
+            Observer { adapter.updateList(it) })
 
 
     }
@@ -42,7 +42,7 @@ class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
         val recyclerView = root.findViewById<RecyclerView>(R.id.recyclerViewHome)
         val layoutManager = GridLayoutManager(context, 3)
         recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = mAdapter
+        recyclerView.adapter = adapter
 
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
@@ -54,7 +54,7 @@ class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
     }
 
     fun getSpanSizeFromPosition(position: Int): Int {
-        var viewType = mAdapter.getItemViewType(position)
+        var viewType = adapter.getItemViewType(position)
         var spanValue =
             when (viewType) {
                 Common.VIEWTYPE.HEADER_MAIN,
@@ -65,7 +65,7 @@ class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
         return spanValue
     }
 
-    override fun cardOnClick(card: Card) {
+    override fun cardOnClick(cards: CardsItem) {
         startActivity(Intent(context, ScreenSlidePagerActivity::class.java))
     }
 }

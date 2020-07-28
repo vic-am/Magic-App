@@ -1,9 +1,9 @@
 package com.accenture.magicapp.view.`interface`
 
-import com.accenture.magicapp.model.data.pojo.card.Card
+import com.accenture.magicapp.model.data.pojo.jsonpojos.CardsItem
 
 interface CardListener {
 
-    fun cardOnClick(card: Card)
+    fun cardOnClick(cards: CardsItem)
 
 }
