@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.accenture.magicapp.R
 import com.accenture.magicapp.Util.Common
-import com.accenture.magicapp.model.data.pojo.jsonpojos.CardsItem
+import com.accenture.magicapp.model.data.pojo.CardsItem
 import com.accenture.magicapp.view.`interface`.CardListener
 import com.accenture.magicapp.view.activity.ScreenSlidePagerActivity
 import com.accenture.magicapp.view.adapter.CardAdapter

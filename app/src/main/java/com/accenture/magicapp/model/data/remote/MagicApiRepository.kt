@@ -1,19 +1,24 @@
 package com.accenture.magicapp.model.data.remote
 
-import com.accenture.magicapp.model.data.pojo.jsonpojos.Response
+import com.accenture.magicapp.model.data.pojo.CardResponse
+import com.accenture.magicapp.model.data.pojo.Sets
 import io.reactivex.Observable
 
 class MagicApiRepository {
 
-    fun getCardsRepository(pageSize: Int = 10, page: Int = 0): Observable<Response>? {
+    fun getCardsRepository(pageSize: Int = 10, page: Int = 0): Observable<CardResponse>? {
         return RetrofitService().getApiService()?.getAllCards(pageSize, page)
+    }
+
+    fun getSetsRepository(): Observable<Sets>? {
+        return RetrofitService().getApiService()?.getSetByCode("ktk")
     }
 
     fun getCardsBySetRepository(
         setCode: String,
         pageSize: Int = 10,
         page: Int = 0
-    ): Observable<Response>? {
+    ): Observable<CardResponse>? {
         return RetrofitService().getApiService()?.getAllCardsBySet(setCode, pageSize, page)
     }
 }

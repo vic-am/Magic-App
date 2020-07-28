@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.accenture.magicapp.R
 import com.accenture.magicapp.Util.Common
-import com.accenture.magicapp.model.data.pojo.jsonpojos.CardsItem
+import com.accenture.magicapp.model.data.pojo.CardsItem
 import com.accenture.magicapp.view.`interface`.CardListener
 import com.squareup.picasso.Picasso
 
@@ -87,6 +87,7 @@ class CardAdapter(internal var cardList: List<CardsItem>, val cardListener: Card
 
     fun updateList(list: List<CardsItem>) {
         cardList = list
+        notifyItemRangeInserted(0, list.size)
     }
 
 
@@ -94,7 +95,11 @@ class CardAdapter(internal var cardList: List<CardsItem>, val cardListener: Card
 
         fun bind(cards: CardsItem) {
             val cardImage = itemView.findViewById<ImageView>(R.id.imageViewCard)
-            Picasso.get().load(cards.imageUrl).into(cardImage)
+            if (cards.imageUrl == null) {
+                cardImage.setImageResource(R.drawable.nocard)
+            } else {
+                Picasso.get().load(cards.imageUrl).into(cardImage)
+            }
         }
 
     }

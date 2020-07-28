@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.accenture.magicapp.R
 import com.accenture.magicapp.Util.Common
-import com.accenture.magicapp.model.data.pojo.jsonpojos.CardsItem
+import com.accenture.magicapp.model.data.pojo.CardsItem
+import com.accenture.magicapp.model.data.pojo.Sets
 import com.accenture.magicapp.view.`interface`.CardListener
 import com.accenture.magicapp.view.activity.ScreenSlidePagerActivity
 import com.accenture.magicapp.view.adapter.CardAdapter
@@ -21,8 +22,11 @@ class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
 
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var homeViewModelJava: HomeViewModelJava
-    private var cardList: List<CardsItem> = listOf()
-    private val adapter: CardAdapter = CardAdapter(cardList, this)
+
+    private var fragmentCardList: List<CardsItem> = listOf()
+    private var fragmentSetList: List<Sets> = listOf()
+
+    private val adapter: CardAdapter = CardAdapter(fragmentCardList, this)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         homeViewModel =
@@ -30,11 +34,17 @@ class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
         initRecyclerView(view)
         homeViewModelJava = ViewModelProviders.of(this).get(HomeViewModelJava::class.java)
 
+//        homeViewModelJava.getAllCards()
+//        homeViewModelJava.cardsList.observe(
+//                  viewLifecycleOwner,
+//            Observer { adapter.updateList(it) })
+
+        homeViewModelJava.getAllSets()
         homeViewModelJava.getAllCards()
         homeViewModelJava.cardsList.observe(
             viewLifecycleOwner,
-            Observer { adapter.updateList(it) })
-
+            Observer { adapter.updateList(it) }
+        )
 
     }
 
@@ -66,6 +76,10 @@ class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
     }
 
     override fun cardOnClick(cards: CardsItem) {
-        startActivity(Intent(context, ScreenSlidePagerActivity::class.java))
+        val intent = Intent(context, ScreenSlidePagerActivity::class.java)
+        var bundle = Bundle()
+        bundle.putParcelable("cards", cards)
+        intent.putExtras(bundle)
+        startActivity(intent)
     }
 }

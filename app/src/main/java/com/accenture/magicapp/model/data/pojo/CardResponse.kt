@@ -1,10 +1,10 @@
-package com.accenture.magicapp.model.data.pojo.jsonpojos
+package com.accenture.magicapp.model.data.pojo
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Response(
+data class CardResponse(
 	val cards: List<CardsItem>? = null
 ) : Parcelable
 
