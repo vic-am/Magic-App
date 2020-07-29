@@ -1,5 +1,6 @@
 package com.accenture.magicapp.view.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,10 +63,10 @@ class CardAdapter(internal var cardList: List<CardsItem>, val cardListener: Card
             cardViewHolder.bind(cardList[position])
         } else if (holder is HeaderMainViewHolder) {
             val headerMainViewHolder = holder
-            headerMainViewHolder.bind("Header title funcionando!")
+            headerMainViewHolder.bind(cardList[position])
         } else if (holder is HeaderTypeViewHolder) {
             val headerTypeViewHolder = holder
-            headerTypeViewHolder.bind("Header type funcionando!")
+            headerTypeViewHolder.bind(cardList[position])
         }
 
         holder.itemView.setOnClickListener {
@@ -73,21 +74,59 @@ class CardAdapter(internal var cardList: List<CardsItem>, val cardListener: Card
                 cardListener.cardOnClick(cardList[position])
             }
         }
+
+        if (holder.adapterPosition == cardList.count()){
+            Log.i("TOAST", " CHEGOU AO FIM")
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (cardList[position].type == Common.TESTS.HEADER_TEST) {
+        return if (cardList[position].itemViewIdentify == Common.TESTS.HEADER_TEST) {
             Common.VIEWTYPE.HEADER_MAIN
-        } else if (cardList[position].type == Common.TESTS.TYPE_TEST) {
+        } else if (cardList[position].itemViewIdentify == Common.TESTS.TYPE_TEST) {
             Common.VIEWTYPE.HEADER_TYPE
         } else {
             Common.VIEWTYPE.BODY_CARDS
         }
     }
 
+
+
     fun updateList(list: List<CardsItem>) {
-        cardList = list
-        notifyItemRangeInserted(0, list.size)
+        //Cria uma nova lista para organizar as views
+        var newList = mutableListOf<CardsItem>()
+
+        //É criado um card para servir de Header View
+        val headerCard = CardsItem()
+        headerCard.itemViewIdentify = Common.TESTS.HEADER_TEST
+        headerCard.text = list[0].set
+        newList.add(headerCard)
+
+        //Aqui é feita uma nova lista dividindo a original em 'types'
+        val listByType = list.groupBy { it.types }
+
+        //Esse for vai realizar a reorganização dos cards na 'newList'
+        for (type in listByType.keys) {
+
+            //Esse card criado servirá como Type header
+            val typeCard = CardsItem()
+            typeCard.itemViewIdentify = Common.TESTS.TYPE_TEST
+
+            //Aqui retiramos o primeiro e o último caracter da string. '[' e ']'
+            var typeName = type.toString().substring(1, type.toString().length - 1)
+            typeCard.text = typeName
+            newList.add(typeCard)
+
+            //Aqui é recuperado todos os cards da lista primária e adicionados em ordem de Types
+            for (card in list) {
+                if (card.types == type) newList.add(card)
+            }
+
+        }
+
+
+        cardList = newList
+        notifyItemRangeInserted(0, newList.size)
     }
 
 
@@ -106,9 +145,9 @@ class CardAdapter(internal var cardList: List<CardsItem>, val cardListener: Card
 
     class HeaderMainViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(headerTitle: String) {
+        fun bind(cards: CardsItem) {
             val title = itemView.findViewById<TextView>(R.id.header_main_title)
-            title.setText(headerTitle)
+            title.setText(cards.text)
         }
 
 
@@ -116,9 +155,9 @@ class CardAdapter(internal var cardList: List<CardsItem>, val cardListener: Card
 
     class HeaderTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(headerType: String) {
+        fun bind(cards: CardsItem) {
             val title = itemView.findViewById<TextView>(R.id.header_type_title)
-            title.setText(headerType)
+            title.setText(cards.text)
         }
     }
 }

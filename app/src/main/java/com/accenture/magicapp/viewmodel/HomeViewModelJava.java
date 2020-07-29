@@ -43,11 +43,23 @@ public class HomeViewModelJava extends AndroidViewModel {
         return setsNameList;
     }
 
-    public void organizeCardList(){}
+    public void organizeCardList() {
+    }
 
     public void getAllCards() {
         disposable.add(
                 repository.getCardsRepository(50, 0)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(cards -> {
+                            cardsList.setValue(cards.getCards());
+                        })
+        );
+    }
+
+    public void getCardsBySet() {
+        disposable.add(
+                repository.getCardsBySetRepository("ktk", 50, 0)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(cards -> {

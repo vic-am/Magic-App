@@ -39,13 +39,11 @@ class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
 //                  viewLifecycleOwner,
 //            Observer { adapter.updateList(it) })
 
-        homeViewModelJava.getAllSets()
-        homeViewModelJava.getAllCards()
+        homeViewModelJava.getCardsBySet()
         homeViewModelJava.cardsList.observe(
             viewLifecycleOwner,
             Observer { adapter.updateList(it) }
         )
-
     }
 
     fun initRecyclerView(root: View) {

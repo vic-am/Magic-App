@@ -16,20 +16,21 @@ data class CardsItem(
 	val foreignNames: List<ForeignNamesItem?>? = null,
 	val originalType: String? = null,
 	val artist: String? = null,
-	val type: String? = null,
+	var type: String? = null,
 	val colors: List<String?>? = null,
 	val number: String? = null,
 	val printings: List<String?>? = null,
 	val variations: List<String?>? = null,
 	val imageUrl: String? = null,
-	val text: String? = null,
+	var text: String? = null,
 	val id: String? = null,
 	val types: List<String?>? = null,
 	val set: String? = null,
 	val flavor: String? = null,
 	val layout: String? = null,
 	val originalText: String? = null,
-	val name: String? = null
+	val name: String? = null,
+	var itemViewIdentify: String? = "card"
 ) : Parcelable
 
 @Parcelize
