@@ -70,7 +70,7 @@ public class HomeViewModelJava extends AndroidViewModel {
 
     public void getAllSets() {
         disposable.add(
-                repository.getSetsRepository()
+                repository.getAllSetsRepository()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(sets -> {

@@ -10,8 +10,8 @@ class MagicApiRepository {
         return RetrofitService().getApiService()?.getAllCards(pageSize, page)
     }
 
-    fun getSetsRepository(): Observable<Sets>? {
-        return RetrofitService().getApiService()?.getSetByCode("ktk")
+    fun getAllSetsRepository(): Observable<Sets>? {
+        return RetrofitService().getApiService()?.getAllSets()
     }
 
     fun getCardsBySetRepository(

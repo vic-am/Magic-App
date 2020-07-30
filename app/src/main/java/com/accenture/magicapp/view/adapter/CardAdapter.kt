@@ -99,7 +99,7 @@ class CardAdapter(internal var cardList: List<CardsItem>, val cardListener: Card
         //É criado um card para servir de Header View
         val headerCard = CardsItem()
         headerCard.itemViewIdentify = Common.TESTS.HEADER_TEST
-        headerCard.text = list[0].set
+        headerCard.text = "Khans of Tarkir"
         newList.add(headerCard)
 
         //Aqui é feita uma nova lista dividindo a original em 'types'

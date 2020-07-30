@@ -34,10 +34,8 @@ class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
         initRecyclerView(view)
         homeViewModelJava = ViewModelProviders.of(this).get(HomeViewModelJava::class.java)
 
-//        homeViewModelJava.getAllCards()
-//        homeViewModelJava.cardsList.observe(
-//                  viewLifecycleOwner,
-//            Observer { adapter.updateList(it) })
+     //   homeViewModelJava.getAllSets()
+     //   Log.i("MAGIC INFO", homeViewModelJava.setsList.value?.name.toString())
 
         homeViewModelJava.getCardsBySet()
         homeViewModelJava.cardsList.observe(

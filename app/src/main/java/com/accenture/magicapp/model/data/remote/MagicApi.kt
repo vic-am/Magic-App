@@ -23,7 +23,7 @@ interface MagicApi {
     ): Observable<CardResponse>
 
     @GET("sets")
-    fun getAllSets(): Observable<List<Sets>>
+    fun getAllSets(): Observable<Sets>
 
     @GET("sets/{setCode}")
     fun getSetByCode(@Path("setCode") setCode: String): Observable<Sets>
