@@ -8,7 +8,7 @@ class Common {
         val BODY_CARDS: Int = 2
     }
 
-    object CARDS_TYPE {
+    object CARDSTYPES {
         val TYPES = listOf(
             "Artifact",
             "Conspiracy",
@@ -26,13 +26,8 @@ class Common {
         )
     }
 
-    object TESTS{
-        val HEADER_TEST = "HEADERTEST"
-        val TYPE_TEST = "TYPETEST"
+    object ITEMVIEWIDENTIFY{
+        val HEADERIDENTIFY = "HEADERVIEW"
+        val TYPEIDENTIFY = "TYPEVIEW"
     }
-
-    object PAGES {
-        val NUM_PAGES = 5
-    }
-
 }
