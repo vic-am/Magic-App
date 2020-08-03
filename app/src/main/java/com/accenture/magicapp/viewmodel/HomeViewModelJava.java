@@ -1,15 +1,16 @@
 package com.accenture.magicapp.viewmodel;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.accenture.magicapp.model.data.MagicRepository;
 import com.accenture.magicapp.model.data.pojo.CardsItem;
 import com.accenture.magicapp.model.data.pojo.Sets;
-import com.accenture.magicapp.model.data.remote.MagicApiRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class HomeViewModelJava extends AndroidViewModel {
     private MutableLiveData<Sets> setsList = new MutableLiveData<>();
     private List<String> setsNameList = new ArrayList<>();
 
-    private MagicApiRepository repository = new MagicApiRepository();
+    private MagicRepository repository = new MagicRepository(getApplication());
     private CompositeDisposable disposable = new CompositeDisposable();
 
     public HomeViewModelJava(@NonNull Application application) {
@@ -59,9 +60,10 @@ public class HomeViewModelJava extends AndroidViewModel {
 
     public void getCardsBySet() {
         disposable.add(
-                repository.getCardsBySetRepository("ktk", 50, 0)
+                repository.getCardsBySetRepository("ktk", 10, 0)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
+                        .doOnError(throwable -> Log.e(null, null, throwable))
                         .subscribe(cards -> {
                             cardsList.setValue(cards.getCards());
                         })
