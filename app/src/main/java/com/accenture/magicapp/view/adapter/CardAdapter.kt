@@ -1,5 +1,6 @@
 package com.accenture.magicapp.view.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,18 +9,23 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.accenture.magicapp.R
-import com.accenture.magicapp.model.mock.Common
-import com.accenture.magicapp.model.mock.MockCards
+import com.accenture.magicapp.Util.Common.ITEMVIEWIDENTIFY
+import com.accenture.magicapp.Util.Common.VIEWTYPE
+import com.accenture.magicapp.model.data.pojo.CardsItem
 import com.accenture.magicapp.view.`interface`.CardListener
+import com.squareup.picasso.Picasso
 
-class CardAdapter(internal var cardList: List<MockCards>, val cardListener: CardListener) :
+class CardAdapter(internal var cardList: List<CardsItem>, val cardListener: CardListener) :
     Adapter<RecyclerView.ViewHolder>() {
+
+    private val organizedCardsList = mutableListOf<CardsItem>()
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
 
         return when (viewType) {
-            Common.VIEWTYPE.HEADER_MAIN -> {
+            VIEWTYPE.HEADER_MAIN -> {
                 HeaderMainViewHolder(
                     layoutInflater.inflate(
                         R.layout.header_main_item,
@@ -29,7 +35,7 @@ class CardAdapter(internal var cardList: List<MockCards>, val cardListener: Card
                 )
             }
 
-            Common.VIEWTYPE.HEADER_TYPE -> {
+            VIEWTYPE.HEADER_TYPE -> {
                 HeaderTypeViewHolder(
                     layoutInflater.inflate(
                         R.layout.header_type_item,
@@ -61,10 +67,10 @@ class CardAdapter(internal var cardList: List<MockCards>, val cardListener: Card
             cardViewHolder.bind(cardList[position])
         } else if (holder is HeaderMainViewHolder) {
             val headerMainViewHolder = holder
-            headerMainViewHolder.bind("Header title funcionando!")
+            headerMainViewHolder.bind(cardList[position])
         } else if (holder is HeaderTypeViewHolder) {
             val headerTypeViewHolder = holder
-            headerTypeViewHolder.bind("Header type funcionando!")
+            headerTypeViewHolder.bind(cardList[position])
         }
 
         holder.itemView.setOnClickListener {
@@ -72,37 +78,76 @@ class CardAdapter(internal var cardList: List<MockCards>, val cardListener: Card
                 cardListener.cardOnClick(cardList[position])
             }
         }
-    }
 
-    override fun getItemViewType(position: Int): Int {
-        return if (cardList[position].type == Common.TESTS.HEADER_TEST) {
-            Common.VIEWTYPE.HEADER_MAIN
-        } else if (cardList[position].type == Common.TESTS.TYPE_TEST) {
-            Common.VIEWTYPE.HEADER_TYPE
-        } else {
-            Common.VIEWTYPE.BODY_CARDS
+        if (holder.adapterPosition == cardList.count()) {
+            Log.i("TOAST", " CHEGOU AO FIM")
         }
     }
 
-    fun updateList(list: List<MockCards>) {
-        cardList = list
+    override fun getItemViewType(position: Int): Int {
+        return if (cardList[position].itemViewIdentify == ITEMVIEWIDENTIFY.HEADERIDENTIFY) {
+            VIEWTYPE.HEADER_MAIN
+        } else if (cardList[position].itemViewIdentify == ITEMVIEWIDENTIFY.TYPEIDENTIFY) {
+            VIEWTYPE.HEADER_TYPE
+        } else {
+            VIEWTYPE.BODY_CARDS
+        }
+    }
+
+
+    fun updateList(list: List<CardsItem>) {
+
+        val listByType = list.groupBy { it.types }
+
+        newHeaderView(organizedCardsList, ITEMVIEWIDENTIFY.HEADERIDENTIFY, "Khans of Tarkir")
+        organizeNewList(listByType)
+
+        cardList = organizedCardsList
+        notifyItemRangeInserted(0, organizedCardsList.size)
+    }
+
+    private fun newHeaderView(
+        list: MutableList<CardsItem>,
+        itemViewIdentify: String,
+        textToBeDisplayed: String
+    ) {
+        val headerCard = CardsItem()
+        headerCard.itemViewIdentify = itemViewIdentify
+        headerCard.text = textToBeDisplayed
+        list.add(headerCard)
+
+    }
+
+    private fun organizeNewList(list: Map<List<String?>?, List<CardsItem>>) {
+        for (type in list.keys) {
+            val typeName = type.toString().substring(1, type.toString().length - 1)
+            newHeaderView(organizedCardsList, ITEMVIEWIDENTIFY.TYPEIDENTIFY, typeName)
+
+            for (card in list) {
+                if (card.key == type) organizedCardsList.addAll(card.value)
+            }
+        }
     }
 
 
     class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(card: MockCards) {
+        fun bind(cards: CardsItem) {
             val cardImage = itemView.findViewById<ImageView>(R.id.imageViewCard)
-            cardImage.setImageResource(card.image)
+            if (cards.imageUrl == null) {
+                cardImage.setImageResource(R.drawable.nocard)
+            } else {
+                Picasso.get().load(cards.imageUrl).into(cardImage)
+            }
         }
 
     }
 
     class HeaderMainViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(headerTitle: String) {
+        fun bind(cards: CardsItem) {
             val title = itemView.findViewById<TextView>(R.id.header_main_title)
-            title.setText(headerTitle)
+            title.setText(cards.text)
         }
 
 
@@ -110,9 +155,9 @@ class CardAdapter(internal var cardList: List<MockCards>, val cardListener: Card
 
     class HeaderTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(headerType: String) {
+        fun bind(cards: CardsItem) {
             val title = itemView.findViewById<TextView>(R.id.header_type_title)
-            title.setText(headerType)
+            title.setText(cards.text)
         }
     }
 }
