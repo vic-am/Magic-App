@@ -9,10 +9,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.accenture.magicapp.R
+import com.accenture.magicapp.Util.Common
 import com.accenture.magicapp.Util.Common.ITEMVIEWIDENTIFY
 import com.accenture.magicapp.Util.Common.VIEWTYPE
 import com.accenture.magicapp.model.data.pojo.CardsItem
-import com.accenture.magicapp.view.`interface`.CardListener
+import com.accenture.magicapp.view.interfaces.CardListener
 import com.squareup.picasso.Picasso
 
 class CardAdapter(internal var cardList: List<CardsItem>, val cardListener: CardListener) :
@@ -97,10 +98,10 @@ class CardAdapter(internal var cardList: List<CardsItem>, val cardListener: Card
 
     fun updateList(list: List<CardsItem>) {
 
+        val listBySet = list.groupBy { it.set }
         val listByType = list.groupBy { it.types }
 
-        newHeaderView(organizedCardsList, ITEMVIEWIDENTIFY.HEADERIDENTIFY, "Khans of Tarkir")
-        organizeNewList(listByType)
+        organizeNewList(listBySet)
 
         cardList = organizedCardsList
         notifyItemRangeInserted(0, organizedCardsList.size)
@@ -111,20 +112,33 @@ class CardAdapter(internal var cardList: List<CardsItem>, val cardListener: Card
         itemViewIdentify: String,
         textToBeDisplayed: String
     ) {
-        val headerCard = CardsItem()
-        headerCard.itemViewIdentify = itemViewIdentify
-        headerCard.text = textToBeDisplayed
+        val headerCard = CardsItem(itemViewIdentify = itemViewIdentify, text = textToBeDisplayed)
         list.add(headerCard)
 
     }
 
-    private fun organizeNewList(list: Map<List<String?>?, List<CardsItem>>) {
-        for (type in list.keys) {
-            val typeName = type.toString().substring(1, type.toString().length - 1)
-            newHeaderView(organizedCardsList, ITEMVIEWIDENTIFY.TYPEIDENTIFY, typeName)
+    private fun organizeNewList(list: Map<String?, List<CardsItem>>) {
+        val setsCount = list.keys.size
+        for (set in list.keys) {
+            if (set != null) {
+                newHeaderView(
+                        organizedCardsList,
+                ITEMVIEWIDENTIFY.HEADERIDENTIFY,
+                Common.SETSNAMES.returnSetName(list[set]?.get(0)?.set.toString())
+                )
 
-            for (card in list) {
-                if (card.key == type) organizedCardsList.addAll(card.value)
+                val listByType = list[set]?.groupBy { it.types }
+                if (listByType != null) {
+                    for (type in listByType.keys) {
+                        val typeName = type.toString().substring(1, type.toString().length - 1)
+                        newHeaderView(organizedCardsList, ITEMVIEWIDENTIFY.TYPEIDENTIFY, typeName)
+
+                        for (card in listByType) {
+                            if (card.key == type) organizedCardsList.addAll(card.value)
+                        }
+                    }
+                }
+
             }
         }
     }
@@ -137,7 +151,8 @@ class CardAdapter(internal var cardList: List<CardsItem>, val cardListener: Card
             if (cards.imageUrl == null) {
                 cardImage.setImageResource(R.drawable.nocard)
             } else {
-                Picasso.get().load(cards.imageUrl).into(cardImage)
+                Picasso.get().load(cards.imageUrl)
+                    .into(cardImage)
             }
         }
 

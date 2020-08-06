@@ -15,6 +15,5 @@ data class Sets(
     val name: String? = null,
     val onlineOnly: Boolean? = null,
     val block: String? = null,
-    val type: String? = null,
-    val booster: List<String?>? = null
+    val type: String? = null
 ) : Parcelable

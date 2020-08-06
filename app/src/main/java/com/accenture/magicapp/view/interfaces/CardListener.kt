@@ -1,4 +1,4 @@
-package com.accenture.magicapp.view.`interface`
+package com.accenture.magicapp.view.interfaces
 
 import com.accenture.magicapp.model.data.pojo.CardsItem
 

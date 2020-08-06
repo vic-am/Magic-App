@@ -21,12 +21,18 @@ import io.reactivex.schedulers.Schedulers;
 
 public class HomeViewModelJava extends AndroidViewModel {
 
+
     private MutableLiveData<List<CardsItem>> cardsList = new MutableLiveData<>();
-    private MutableLiveData<Sets> setsList = new MutableLiveData<>();
+
+    private MutableLiveData<List<Sets>> setsList = new MutableLiveData<>();
     private List<String> setsNameList = new ArrayList<>();
 
-    private MagicRepository repository = new MagicRepository(getApplication());
+    private MagicRepository repository = new MagicRepository(getApplication().getApplicationContext());
     private CompositeDisposable disposable = new CompositeDisposable();
+    private int setIterator = 1;
+    private int maxPageSize = 100;
+    private int page = 0;
+
 
     public HomeViewModelJava(@NonNull Application application) {
         super(application);
@@ -36,7 +42,7 @@ public class HomeViewModelJava extends AndroidViewModel {
         return this.cardsList;
     }
 
-    public MutableLiveData<Sets> getSetsList() {
+    public MutableLiveData<List<Sets>> getSetsList() {
         return this.setsList;
     }
 
@@ -44,12 +50,10 @@ public class HomeViewModelJava extends AndroidViewModel {
         return setsNameList;
     }
 
-    public void organizeCardList() {
-    }
 
     public void getAllCards() {
         disposable.add(
-                repository.getCardsRepository(50, 0)
+                repository.getCardsRepository(maxPageSize, page)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(cards -> {
@@ -58,9 +62,12 @@ public class HomeViewModelJava extends AndroidViewModel {
         );
     }
 
+
+
     public void getCardsBySet() {
+        String code = setsList.getValue().get(setIterator).getCode();
         disposable.add(
-                repository.getCardsBySetRepository("ktk", 10, 0)
+                repository.getCardsBySetRepository(code, maxPageSize, page)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnError(throwable -> Log.e(null, null, throwable))
@@ -75,9 +82,17 @@ public class HomeViewModelJava extends AndroidViewModel {
                 repository.getAllSetsRepository()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
+                        .doOnError(throwable -> Log.e(null, null, throwable))
                         .subscribe(sets -> {
-                            setsList.setValue(sets);
+                            setsList.setValue(sets.getSets());
+                            getCardsBySet();
                         })
         );
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        disposable.clear();
     }
 }
