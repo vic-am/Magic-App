@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/margin_min">
+    android:paddingTop="@dimen/margin_min"
+    android:paddingBottom="@dimen/margin_min">
 
     <TextView
         android:id="@+id/header_main_title"

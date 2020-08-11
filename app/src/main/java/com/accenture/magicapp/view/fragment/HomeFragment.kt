@@ -12,11 +12,12 @@ import com.accenture.magicapp.R
 import com.accenture.magicapp.Util.Common
 import com.accenture.magicapp.model.data.pojo.CardsItem
 import com.accenture.magicapp.model.data.pojo.Sets
-import com.accenture.magicapp.view.`interface`.CardListener
 import com.accenture.magicapp.view.activity.ScreenSlidePagerActivity
 import com.accenture.magicapp.view.adapter.CardAdapter
+import com.accenture.magicapp.view.interfaces.CardListener
 import com.accenture.magicapp.viewmodel.HomeViewModel
 import com.accenture.magicapp.viewmodel.HomeViewModelJava
+import kotlinx.android.synthetic.main.fragment_main_recycler.*
 
 class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
 
@@ -24,20 +25,27 @@ class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
     private lateinit var homeViewModelJava: HomeViewModelJava
 
     private var fragmentCardList: List<CardsItem> = listOf()
-    private var fragmentSetList: List<Sets> = listOf()
 
     private val adapter: CardAdapter = CardAdapter(fragmentCardList, this)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         homeViewModel =
             ViewModelProviders.of(this).get(HomeViewModel::class.java)
+        homeViewModelJava =
+            ViewModelProviders.of(this).get(HomeViewModelJava::class.java)
         initRecyclerView(view)
-        homeViewModelJava = ViewModelProviders.of(this).get(HomeViewModelJava::class.java)
 
-     //   homeViewModelJava.getAllSets()
-     //   Log.i("MAGIC INFO", homeViewModelJava.setsList.value?.name.toString())
+        loadAllSets()
+        loadCardsBySet()
 
-        homeViewModelJava.getCardsBySet()
+
+    }
+
+    fun loadAllSets() {
+        homeViewModelJava.getAllSets()
+    }
+
+    fun loadCardsBySet() {
         homeViewModelJava.cardsList.observe(
             viewLifecycleOwner,
             Observer { adapter.updateList(it) }
@@ -77,5 +85,19 @@ class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
         bundle.putParcelable("cards", cards)
         intent.putExtras(bundle)
         startActivity(intent)
+    }
+
+    private fun setScrollView() {
+
+        recyclerViewHome.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+            }
+        })
     }
 }

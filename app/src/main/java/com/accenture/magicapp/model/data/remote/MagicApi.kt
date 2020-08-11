@@ -1,6 +1,7 @@
 package com.accenture.magicapp.model.data.remote
 
 import com.accenture.magicapp.model.data.pojo.CardResponse
+import com.accenture.magicapp.model.data.pojo.SetResponse
 import com.accenture.magicapp.model.data.pojo.Sets
 import io.reactivex.Observable
 import retrofit2.http.GET
@@ -23,10 +24,10 @@ interface MagicApi {
     ): Observable<CardResponse>
 
     @GET("sets")
-    fun getAllSets(): Observable<Sets>
+    fun getAllSets(): Observable<SetResponse>
 
     @GET("sets/{setCode}")
-    fun getSetByCode(@Path("setCode") setCode: String): Observable<Sets>
+    fun getSetByCode(@Path("setCode") setCode: String): Observable<SetResponse>
 
 
 }

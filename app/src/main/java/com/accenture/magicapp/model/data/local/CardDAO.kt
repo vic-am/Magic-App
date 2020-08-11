@@ -4,18 +4,19 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.accenture.magicapp.model.data.pojo.CardsItem
+import com.accenture.magicapp.model.data.entities.CardItemEntity
+import io.reactivex.Observable
 
 @Dao
 interface CardDAO {
 
     @Insert
-    fun saveCard(card: CardsItem)
+    fun saveCard(card: CardItemEntity)
 
     @Delete
-    fun removeCard(card: CardsItem)
+    fun removeCard(card: CardItemEntity)
 
     @Query("SELECT * FROM Card")
-    fun loadCards()
+    fun loadCards(): Observable<List<CardItemEntity>>
 
 }
