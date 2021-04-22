@@ -4,46 +4,100 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import com.accenture.magicapp.R
 import com.accenture.magicapp.model.data.entities.CardItemEntity
 import com.accenture.magicapp.model.data.local.CardDatabase
 import com.accenture.magicapp.model.data.pojo.CardResponse
-import com.accenture.magicapp.model.data.pojo.CardsItem
 import com.accenture.magicapp.model.data.pojo.SetResponse
-import com.accenture.magicapp.model.data.pojo.Sets
+import com.accenture.magicapp.model.data.remote.ApiListener
+import com.accenture.magicapp.model.data.remote.MagicApi
 import com.accenture.magicapp.model.data.remote.RetrofitService
 import io.reactivex.Observable
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class MagicRepository(context: Context) {
+class MagicRepository(val context: Context) {
 
+    //Retrofit
+    private val remote = RetrofitService.createService(MagicApi::class.java)
+
+    //Room
     private val cardDatabase = CardDatabase.getDatabase(context).cardDAO()
 
-    fun getCardsRepository(pageSize: Int = 10, page: Int = 0): Observable<CardResponse>? {
-        return RetrofitService().getApiService()?.getAllCards(pageSize, page)
+    //Métodos Retrofit
+    fun getCardsRepository(pageSize: Int = 10, page: Int = 0, listener: ApiListener<CardResponse>) {
+        val call: Call<CardResponse> = remote.getAllCards(pageSize, page)
+        cardResponse(call, listener)
     }
 
-    fun getAllSetsRepository(): Observable<SetResponse>? {
-        return RetrofitService().getApiService()?.getAllSets()
+    fun getAllSetsRepository(listener: ApiListener<SetResponse>) {
+        val call: Call<SetResponse> = remote.getAllSets()
+        setResponse(call, listener)
     }
 
     fun getCardsBySetRepository(
         setCode: String,
         pageSize: Int = 10,
-        page: Int = 0
-    ): Observable<CardResponse>? {
-        return RetrofitService().getApiService()?.getAllCardsBySet(setCode, pageSize, page)
+        page: Int = 0,
+        listener: ApiListener<CardResponse>
+    ) {
+        val call: Call<CardResponse> = remote.getAllCardsBySet(setCode, pageSize, page)
+        cardResponse(call, listener)
     }
 
-    fun saveCardAsFavorite(card: CardItemEntity) {
-        cardDatabase.saveCard(card)
+    private fun cardResponse(call: Call<CardResponse>, listener: ApiListener<CardResponse>) {
+        if (!isConnectionAvailable(context)) {
+            listener.onFailure(context.getString(R.string.ERROR_INTERNET_CONNECTION))
+            return
+        }
+
+        call.enqueue(object : Callback<CardResponse> {
+            override fun onResponse(call: Call<CardResponse>, response: Response<CardResponse>) {
+                if (response.code() != 200) {
+                    val validation = response.errorBody()?.string()
+                    if (validation != null) {
+                        listener.onFailure(validation)
+                    } else {
+                        listener.onFailure(context.getString(R.string.ERROR_UNEXPECTED))
+                    }
+                } else {
+                    response.body()?.let { listener.onSuccess(it) }
+                }
+            }
+
+            override fun onFailure(call: Call<CardResponse>, t: Throwable) {
+                listener.onFailure(context.getString(R.string.ERROR_UNEXPECTED))
+            }
+
+        })
     }
 
-    fun deleteCardAsFavorite(card: CardItemEntity) {
-        cardDatabase.removeCard(card)
-    }
+    private fun setResponse(call: Call<SetResponse>, listener: ApiListener<SetResponse>) {
+        if (!isConnectionAvailable(context)) {
+            listener.onFailure(context.getString(R.string.ERROR_INTERNET_CONNECTION))
+            return
+        }
 
+        call.enqueue(object : Callback<SetResponse> {
+            override fun onResponse(call: Call<SetResponse>, response: Response<SetResponse>) {
+                if (response.code() != 200) {
+                    val validation = response.errorBody()?.string()
+                    if (validation != null) {
+                        listener.onFailure(validation)
+                    } else {
+                        listener.onFailure(context.getString(R.string.ERROR_UNEXPECTED))
+                    }
+                } else {
+                    response.body()?.let { listener.onSuccess(it) }
+                }
+            }
 
-    fun getFavoritesCards():Observable<List<CardItemEntity>> {
-        return cardDatabase.loadCards()
+            override fun onFailure(call: Call<SetResponse>, t: Throwable) {
+                listener.onFailure(context.getString(R.string.ERROR_UNEXPECTED))
+            }
+
+        })
     }
 
     fun isConnectionAvailable(context: Context): Boolean {
@@ -78,5 +132,18 @@ class MagicRepository(context: Context) {
         }
 
         return isAvailable
+    }
+
+    //Métodos Room
+    fun saveCardAsFavorite(card: CardItemEntity) {
+        cardDatabase.saveCard(card)
+    }
+
+    fun deleteCardAsFavorite(card: CardItemEntity) {
+        cardDatabase.removeCard(card)
+    }
+
+    fun getFavoritesCards(): Observable<List<CardItemEntity>> {
+        return cardDatabase.loadCards()
     }
 }

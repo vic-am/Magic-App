@@ -6,4 +6,6 @@
     <string name="title_activity_home">MainActivity</string>
     <string name="title_cards">Cards</string>
     <string name="title_favorites">Favorites</string>
+    <string name="ERROR_UNEXPECTED">Houve um erro ao processar a solicitação. Tente novamente mais tarde</string>
+    <string name="ERROR_INTERNET_CONNECTION">Verifique sua conexão com a internet e tente novamente.</string>
 </resources>
