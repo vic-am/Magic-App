@@ -29,16 +29,11 @@ class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
             ViewModelProviders.of(this).get(HomeViewModel::class.java)
         initRecyclerView(view)
 
-        observe()
-
-    }
-
-    override fun onResume() {
-        super.onResume()
         homeViewModel.getAllCards()
+        observe()
     }
 
-    fun observe() {
+    private fun observe() {
         homeViewModel.cardsList.observe(viewLifecycleOwner, Observer {
             if (it.count() >= 0) {
                 adapter.updateList(it)
@@ -55,18 +50,7 @@ class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
         })
     }
 
-    fun loadAllSets() {
-        homeViewModel.getAllSets()
-    }
-
-    fun loadCardsBySet() {
-        homeViewModel.cardsList.observe(
-            viewLifecycleOwner,
-            Observer { adapter.updateList(it) }
-        )
-    }
-
-    fun initRecyclerView(root: View) {
+    private fun initRecyclerView(root: View) {
         val recyclerView = root.findViewById<RecyclerView>(R.id.recyclerViewHome)
         val layoutManager = GridLayoutManager(context, 3)
         recyclerView.layoutManager = layoutManager
@@ -82,36 +66,20 @@ class HomeFragment : Fragment(R.layout.fragment_main_recycler), CardListener {
     }
 
     fun getSpanSizeFromPosition(position: Int): Int {
-        var viewType = adapter.getItemViewType(position)
-        var spanValue =
-            when (viewType) {
-                Common.VIEWTYPE.HEADER_MAIN,
-                Common.VIEWTYPE.HEADER_TYPE -> 3
-                else -> 1
-            }
 
-        return spanValue
+        return when (adapter.getItemViewType(position)) {
+            Common.VIEWTYPE.HEADER_MAIN,
+            Common.VIEWTYPE.HEADER_TYPE -> 3
+            else -> 1
+        }
     }
 
     override fun cardOnClick(cards: CardsItem) {
         val intent = Intent(context, ScreenSlidePagerActivity::class.java)
-        var bundle = Bundle()
+        val bundle = Bundle()
         bundle.putParcelable("cards", cards)
         intent.putExtras(bundle)
         startActivity(intent)
     }
 
-    private fun setScrollView() {
-
-        recyclerViewHome.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-            }
-        })
-    }
 }

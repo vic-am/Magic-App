@@ -26,7 +26,7 @@ class MagicRepository(val context: Context) {
     private val cardDatabase = CardDatabase.getDatabase(context).cardDAO()
 
     //Métodos Retrofit
-    fun getCardsRepository(pageSize: Int = 10, page: Int = 0, listener: ApiListener<CardResponse>) {
+    fun getCardsRepository(pageSize: Int = 20, page: Int = 0, listener: ApiListener<CardResponse>) {
         val call: Call<CardResponse> = remote.getAllCards(pageSize, page)
         cardResponse(call, listener)
     }
@@ -100,7 +100,7 @@ class MagicRepository(val context: Context) {
         })
     }
 
-    fun isConnectionAvailable(context: Context): Boolean {
+    private fun isConnectionAvailable(context: Context): Boolean {
         var isAvailable = false
         val connectionManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
