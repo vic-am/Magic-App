@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import com.accenture.magicapp.R
+import com.accenture.magicapp.Util.Common
 import com.accenture.magicapp.model.data.entities.CardItemEntity
 import com.accenture.magicapp.model.data.local.CardDatabase
 import com.accenture.magicapp.model.data.pojo.CardResponse
@@ -19,20 +20,17 @@ import retrofit2.Response
 
 class MagicRepository(val context: Context) {
 
-    //Retrofit
-    private val remote = RetrofitService.createService(MagicApi::class.java)
+    private val retrofit = RetrofitService.createService(MagicApi::class.java)
 
-    //Room
     private val cardDatabase = CardDatabase.getDatabase(context).cardDAO()
 
-    //Métodos Retrofit
     fun getCardsRepository(pageSize: Int = 20, page: Int = 0, listener: ApiListener<CardResponse>) {
-        val call: Call<CardResponse> = remote.getAllCards(pageSize, page)
+        val call: Call<CardResponse> = retrofit.getAllCards(pageSize, page)
         cardResponse(call, listener)
     }
 
     fun getAllSetsRepository(listener: ApiListener<SetResponse>) {
-        val call: Call<SetResponse> = remote.getAllSets()
+        val call: Call<SetResponse> = retrofit.getAllSets()
         setResponse(call, listener)
     }
 
@@ -42,7 +40,7 @@ class MagicRepository(val context: Context) {
         page: Int = 0,
         listener: ApiListener<CardResponse>
     ) {
-        val call: Call<CardResponse> = remote.getAllCardsBySet(setCode, pageSize, page)
+        val call: Call<CardResponse> = retrofit.getAllCardsBySet(setCode, pageSize, page)
         cardResponse(call, listener)
     }
 
@@ -54,7 +52,7 @@ class MagicRepository(val context: Context) {
 
         call.enqueue(object : Callback<CardResponse> {
             override fun onResponse(call: Call<CardResponse>, response: Response<CardResponse>) {
-                if (response.code() != 200) {
+                if (response.code() != Common.NETWORK.SUCCESS) {
                     val validation = response.errorBody()?.string()
                     if (validation != null) {
                         listener.onFailure(validation)
@@ -81,7 +79,7 @@ class MagicRepository(val context: Context) {
 
         call.enqueue(object : Callback<SetResponse> {
             override fun onResponse(call: Call<SetResponse>, response: Response<SetResponse>) {
-                if (response.code() != 200) {
+                if (response.code() != Common.NETWORK.SUCCESS) {
                     val validation = response.errorBody()?.string()
                     if (validation != null) {
                         listener.onFailure(validation)
@@ -134,7 +132,6 @@ class MagicRepository(val context: Context) {
         return isAvailable
     }
 
-    //Métodos Room
     fun saveCardAsFavorite(card: CardItemEntity) {
         cardDatabase.saveCard(card)
     }
