@@ -160,6 +160,7 @@ class CardAdapter(private var cardList: List<CardsItem>, private val cardListene
                     .target(cardImage)
                     .placeholder(R.drawable.nocard)
                     .build()
+                imageLoader.enqueue(request)
             }
         }
 
