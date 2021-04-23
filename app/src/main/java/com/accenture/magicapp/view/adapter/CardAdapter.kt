@@ -8,6 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
+import coil.ImageLoader
+import coil.request.ImageRequest
 import com.accenture.magicapp.R
 import com.accenture.magicapp.Util.Common
 import com.accenture.magicapp.Util.Common.ITEMVIEWIDENTIFY
@@ -152,8 +154,12 @@ class CardAdapter(private var cardList: List<CardsItem>, private val cardListene
             if (cards.imageUrl == null) {
                 cardImage.setImageResource(R.drawable.nocard)
             } else {
-                Picasso.get().load(cards.imageUrl)
-                    .into(cardImage)
+                val imageLoader = ImageLoader(itemView.context)
+                val request = ImageRequest.Builder(itemView.context)
+                    .data(cards.imageUrl)
+                    .target(cardImage)
+                    .placeholder(R.drawable.nocard)
+                    .build()
             }
         }
 
