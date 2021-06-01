@@ -8,6 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
+import coil.ImageLoader
+import coil.request.ImageRequest
 import com.accenture.magicapp.R
 import com.accenture.magicapp.Util.Common
 import com.accenture.magicapp.Util.Common.ITEMVIEWIDENTIFY
@@ -16,7 +18,7 @@ import com.accenture.magicapp.model.data.pojo.CardsItem
 import com.accenture.magicapp.view.interfaces.CardListener
 import com.squareup.picasso.Picasso
 
-class CardAdapter(internal var cardList: List<CardsItem>, val cardListener: CardListener) :
+class CardAdapter(private var cardList: List<CardsItem>, private val cardListener: CardListener) :
     Adapter<RecyclerView.ViewHolder>() {
 
     private val organizedCardsList = mutableListOf<CardsItem>()
@@ -63,15 +65,16 @@ class CardAdapter(internal var cardList: List<CardsItem>, val cardListener: Card
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is CardViewHolder) {
-            val cardViewHolder = holder
-            cardViewHolder.bind(cardList[position])
-        } else if (holder is HeaderMainViewHolder) {
-            val headerMainViewHolder = holder
-            headerMainViewHolder.bind(cardList[position])
-        } else if (holder is HeaderTypeViewHolder) {
-            val headerTypeViewHolder = holder
-            headerTypeViewHolder.bind(cardList[position])
+        when (holder) {
+            is CardViewHolder -> {
+                holder.bind(cardList[position])
+            }
+            is HeaderMainViewHolder -> {
+                holder.bind(cardList[position])
+            }
+            is HeaderTypeViewHolder -> {
+                holder.bind(cardList[position])
+            }
         }
 
         holder.itemView.setOnClickListener {
@@ -151,8 +154,13 @@ class CardAdapter(internal var cardList: List<CardsItem>, val cardListener: Card
             if (cards.imageUrl == null) {
                 cardImage.setImageResource(R.drawable.nocard)
             } else {
-                Picasso.get().load(cards.imageUrl)
-                    .into(cardImage)
+                val imageLoader = ImageLoader(itemView.context)
+                val request = ImageRequest.Builder(itemView.context)
+                    .data(cards.imageUrl)
+                    .target(cardImage)
+                    .placeholder(R.drawable.nocard)
+                    .build()
+                imageLoader.enqueue(request)
             }
         }
 
@@ -162,7 +170,7 @@ class CardAdapter(internal var cardList: List<CardsItem>, val cardListener: Card
 
         fun bind(cards: CardsItem) {
             val title = itemView.findViewById<TextView>(R.id.header_main_title)
-            title.setText(cards.text)
+            title.text = cards.text
         }
 
 
@@ -172,7 +180,7 @@ class CardAdapter(internal var cardList: List<CardsItem>, val cardListener: Card
 
         fun bind(cards: CardsItem) {
             val title = itemView.findViewById<TextView>(R.id.header_type_title)
-            title.setText(cards.text)
+            title.text = cards.text
         }
     }
 }
