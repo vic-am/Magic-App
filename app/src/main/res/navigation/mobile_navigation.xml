@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/navigation_cards"
-        android:name="com.accenture.magicapp.view.fragment.HomeFragment"
+        android:name="com.accenture.magicapp.ui.home.HomeFragment"
         android:label="@string/title_cards"
         tools:layout="@layout/fragment_main_recycler" />
 
     <fragment
         android:id="@+id/navigation_favorites"
-        android:name="com.accenture.magicapp.view.fragment.FavoritesFragment"
+        android:name="com.accenture.magicapp.ui.favorites.FavoritesFragment"
         android:label="@string/title_favorites"
         tools:layout="@layout/fragment_main_recycler" />
 

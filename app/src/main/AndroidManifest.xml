@@ -13,9 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".view.activity.ScreenSlidePagerActivity"></activity>
+        <activity android:name=".ui.screenslide.ScreenSlidePagerActivity"></activity>
         <activity
-            android:name=".view.activity.HomeActivity"
+            android:name=".ui.home.HomeActivity"
             android:label="@string/title_activity_home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
